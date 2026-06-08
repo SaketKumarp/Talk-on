@@ -1,56 +1,159 @@
-# Welcome to your Expo app 👋
+# 🤖 Talk-On AI Chat App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Talk-On is a modern AI-powered mobile chat application built with React Native, Expo, and Socket.IO. The app enables real-time conversations with an AI assistant through a clean and intuitive interface.
 
-## Get started
+<img src="https://github.com/user-attachments/assets/934c4472-2c88-4abe-97b3-ec6189575e54"
+     alt="Talk-On App"
+     width="300" />
 
-1. Install dependencies
+## ✨ Features
 
-   ```bash
-   npm install
-   ```
+* 💬 Real-time messaging using Socket.IO
+* 🤖 AI-powered responses
+* 📱 Cross-platform mobile application
+* ⚡ Fast and responsive UI
+* 🕒 Conversation history
+* 👤 User profile management
+* 🎨 Modern dark-themed interface
+* 🔄 Live message updates
+* 📡 WebSocket-based communication
+* 🚀 Built with Expo Router
 
-2. Start the app
+## 🛠️ Tech Stack
 
-   ```bash
-   npx expo start
-   ```
+### Frontend
 
-In the output, you'll find options to open the app in a
+* React Native
+* Expo
+* Expo Router
+* TypeScript
+* NativeWind (Tailwind CSS for React Native)
+* Socket.IO Client
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### Backend
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+* Node.js
+* Express.js
+* Socket.IO
+* AI Model Integration (OpenAI/Groq/Gemini)
 
-## Get a fresh project
-
-When you're ready, run:
+## 📂 Project Structure
 
 ```bash
-npm run reset-project
+app/
+├── (tabs)/
+│   ├── index.tsx        # Home/Chat Screen
+│   ├── history.tsx      # Chat History
+│   ├── profile.tsx      # User Profile
+│   └── _layout.tsx      # Tab Navigation
+│
+├── _layout.tsx          # Root Layout
+│
+components/
+├── ChatBubble.tsx
+├── MessageInput.tsx
+├── Header.tsx
+└── LoadingIndicator.tsx
+
+hooks/
+├── useSocket.ts
+└── useChat.ts
+
+constants/
+└── theme.ts
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## 🚀 Getting Started
 
-### Other setup steps
+### Clone the Repository
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+```bash
+git clone https://github.com/your-username/talk-on.git
+cd talk-on
+```
 
-## Learn more
+### Install Dependencies
 
-To learn more about developing your project with Expo, look at the following resources:
+```bash
+npm install
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### Start the Development Server
 
-## Join the community
+```bash
+npx expo start
+```
 
-Join our community of developers creating universal apps.
+### Run on iOS
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```bash
+npx expo run:ios
+```
+
+### Run on Android
+
+```bash
+npx expo run:android
+```
+
+## 🔌 Socket.IO Flow
+
+```text
+User Message
+      ↓
+Socket.IO Client
+      ↓
+Backend Server
+      ↓
+AI Model
+      ↓
+Backend Server
+      ↓
+Socket.IO
+      ↓
+Mobile App
+```
+
+## 📱 Screens
+
+### Home
+
+* Start AI conversations
+* Send and receive messages in real time
+* Display typing indicators
+
+### History
+
+* View previous conversations
+* Search past chats
+* Resume conversations
+
+### Profile
+
+* Manage account information
+* Customize preferences
+* View usage statistics
+
+## 🔮 Future Improvements
+
+* Voice-to-text support
+* Text-to-speech responses
+* AI image generation
+* Group chat functionality
+* Push notifications
+* Authentication & Authorization
+* Cloud chat synchronization
+* Offline message caching
+
+## 🤝 Contributing
+
+Contributions are welcome. Feel free to fork the repository and submit a pull request.
+
+## 📜 License
+
+This project is licensed under the MIT License.
+
+## 👨‍💻 Author
+
+Built with ❤️ using React Native, Expo, Socket.IO, and AI.
+<img width="1170" height="2532" alt="Simulator Screenshot - iPhone 16e - 2026-06-08 at 23 15 57" src="https://github.com/user-attachments/assets/d6196b2a-ce5a-4568-b7d5-73f32802dcb6" />
