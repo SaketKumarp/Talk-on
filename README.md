@@ -153,6 +153,7 @@ Contributions are welcome. Feel free to fork the repository and submit a pull re
 ## 📜 License
 
 This project is licensed under the MIT License.
+this would be web socket based app
 
 ## 👨‍💻 Author
 
