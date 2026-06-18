@@ -84,14 +84,10 @@ export const loginUser=async(req : Request , res : Response): Promise<void >=> {
                 }
              })
 
-    
              
     } catch (error) {
         console.log("internal server error", error)
 
     }
-
-
-
-
+ 
 }
