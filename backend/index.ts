@@ -4,14 +4,16 @@ import http from "http"
 import dotenv from "dotenv"
 import { connectDB } from "./config/db"
 import authRoutes from "./routes/auth-routes"
+import useRoutes from "./routes/user-routes"
 dotenv.config()
-
 
 
 const app = express();
 app.use(express.json())
 app.use(cors())
 app.use("/auth", authRoutes)
+app.use("/user", useRoutes);
+
 
 app.get("/", (req,res)=> {
         res.send("server is fine")
