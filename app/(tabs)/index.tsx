@@ -1,8 +1,14 @@
 import {   useRouter } from "expo-router";
 import { View, Text, Button } from "react-native";
+import { isLoggedIn } from "../../hooks/IsLoggedin";
 
 export default function HomeScreen() {
     const router = useRouter();
+    if(!isLoggedIn()){
+        router.push("/auth/sign-in");
+        return;
+    }
+
 
     return (
       <View className="flex-1 items-center justify-center bg-black px-6">
