@@ -14,4 +14,5 @@ export const connectDB= async () : Promise<void>=> {
         }
         
 }
- 
+ // redish -- pub-sub model 
+ // 
