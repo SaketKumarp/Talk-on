@@ -8,6 +8,7 @@ Talk-On is a modern AI-powered mobile chat application built with React Native, 
 
 ## ✨ Features
 lests see
+also it will be scalable as i am adding redis and other HLD solutions in this
 
 * 💬 Real-time messaging using Socket.IO
 * 🤖 AI-powered responses
