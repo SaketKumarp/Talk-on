@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/user";
+import { getRabbitMqChannel } from "../config/rabbitmq";
 
  
 const generateToken = (userId: string) => {
@@ -10,6 +11,7 @@ const generateToken = (userId: string) => {
   });
 };
  
+
 
 export const registerUser = async (
   req: Request,
@@ -57,6 +59,25 @@ export const registerUser = async (
       password: hashedPassword,
       avatar,
     });
+
+const channel = getRabbitMqChannel();
+
+channel.sendToQueue(
+  "emailQueue",
+  Buffer.from(
+    JSON.stringify({
+      type: "WELCOME_EMAIL",
+      to: user.email,
+      name: user.name,
+    }),
+  ),
+  {
+    persistent: true,
+  },
+);
+
+console.log()
+
 
     // Generate JWT
     const token = generateToken(user._id.toString());

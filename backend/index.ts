@@ -6,6 +6,7 @@ import { connectDB } from "./config/db"
 import authRoutes from "./routes/auth-routes"
 import useRoutes from "./routes/user-routes"
 import {createClient} from "redis"
+import { connectRabbitMQ } from "./config/rabbitmq"
 dotenv.config()
 
 
@@ -33,6 +34,8 @@ const startServer = async ()=> {
             await connectDB();
             await redisClient.connect()
             console.log("redis connected")
+            await connectRabbitMQ();
+            console.log("rabit mq connected")
             const server = http.createServer(app);
             server.listen(PORT, () => {
               console.log("server is running", PORT);
