@@ -34,3 +34,16 @@ export const getRabbitMqChannel = () => {
 
   return channel;
 };
+export const publishToQueue = async (queueName: string, message: any) => {
+  const channel = getRabbitMqChannel();
+
+  await channel.assertQueue(queueName, {
+    durable: true,
+  });
+
+  channel.sendToQueue(queueName, Buffer.from(JSON.stringify(message)), {
+    persistent: true,
+  });
+
+  console.log("Message published:", message);
+};

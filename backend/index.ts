@@ -7,6 +7,7 @@ import authRoutes from "./routes/auth-routes"
 import useRoutes from "./routes/user-routes"
 import {createClient} from "redis"
 import { connectRabbitMQ } from "./config/rabbitmq"
+import { startEmailWorker } from "./workers/emailWorker"
 dotenv.config()
 
 
@@ -36,6 +37,8 @@ const startServer = async ()=> {
             console.log("redis connected")
             await connectRabbitMQ();
             console.log("rabit mq connected")
+
+            await startEmailWorker();
             const server = http.createServer(app);
             server.listen(PORT, () => {
               console.log("server is running", PORT);
