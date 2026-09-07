@@ -3,15 +3,13 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/user";
 import { getRabbitMqChannel } from "../config/rabbitmq";
+import { redisClient } from "..";
 
- 
 const generateToken = (userId: string) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET as string, {
     expiresIn: "7d",
   });
 };
- 
-
 
 export const registerUser = async (
   req: Request,
@@ -58,33 +56,132 @@ export const registerUser = async (
       email,
       password: hashedPassword,
       avatar,
+      isVerified: false,
     });
 
-const channel = getRabbitMqChannel();
+    // Generate 6 digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log("otp is  :", otp)
 
-channel.sendToQueue(
-  "emailQueue",
-  Buffer.from(
-    JSON.stringify({
-      type: "WELCOME_EMAIL",
-      to: user.email,
-      name: user.name,
-    }),
-  ),
-  {
-    persistent: true,
-  },
-);
+    // Store OTP in Redis for 5 minutes
+    await redisClient.set(`otp:${user.email}`, otp, {
+      EX: 3600,
+    });
 
-console.log()
+    // Get RabbitMQ channel
+    const channel = getRabbitMqChannel();
 
+    // Send OTP job to RabbitMQ
+    channel.sendToQueue(
+      "emailQueue",
+      Buffer.from(
+        JSON.stringify({
+          type: "otp",
+          email: user.email,
+         otp
+        }),
+      ),
+      {
+        persistent: true,
+      },
+    );
+
+    console.log(`OTP generated for ${user.email}`);
+
+    // Do NOT generate JWT yet
+    // User must verify OTP first
+
+    res.status(201).json({
+      success: true,
+      message: "Registration successful. OTP sent to your email.",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+      },
+    });
+  } catch (error) {
+    console.error("Registration error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+// VERIFY EMAIL OTP
+export const verifyEmail = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const { email, otp } = req.body;
+
+    // Validation
+    if (!email || !otp) {
+      res.status(400).json({
+        success: false,
+        message: "Email and OTP are required.",
+      });
+      return;
+    }
+
+    // Find user
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      res.status(404).json({
+        success: false,
+        message: "User not found.",
+      });
+      return;
+    }
+
+    // Check if already verified
+    if (user.isVerified) {
+      res.status(400).json({
+        success: false,
+        message: "Email is already verified.",
+      });
+      return;
+    }
+
+    // Get OTP from Redis
+    const storedOTP = await redisClient.get(`otp:${email}`);
+
+    // OTP expired
+    if (!storedOTP) {
+      res.status(400).json({
+        success: false,
+        message: "OTP has expired. Please request a new OTP.",
+      });
+      return;
+    }
+
+    // Incorrect OTP
+    if (storedOTP !== otp) {
+      res.status(400).json({
+        success: false,
+        message: "Invalid OTP.",
+      });
+      return;
+    }
+
+    // Mark user as verified
+    user.isVerified = true;
+    await user.save();
+
+    // Delete OTP from Redis
+    await redisClient.del(`otp:${email}`);
 
     // Generate JWT
     const token = generateToken(user._id.toString());
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
-      message: "User registered successfully.",
+      message: "Email verified successfully.",
       token,
       user: {
         id: user._id,
@@ -94,7 +191,7 @@ console.log()
       },
     });
   } catch (error) {
-    console.error(error);
+    console.error("Email verification error:", error);
 
     res.status(500).json({
       success: false,
@@ -103,12 +200,12 @@ console.log()
   }
 };
 
- 
-
+// LOGIN
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
 
+    // Validation
     if (!email || !password) {
       res.status(400).json({
         success: false,
@@ -127,7 +224,17 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       });
       return;
     }
- 
+
+    // Check email verification
+    if (!user.isVerified) {
+      res.status(403).json({
+        success: false,
+        message: "Please verify your email before logging in.",
+      });
+      return;
+    }
+
+    // Check password
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
@@ -153,7 +260,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       },
     });
   } catch (error) {
-    console.error(error);
+    console.error("Login error:", error);
 
     res.status(500).json({
       success: false,

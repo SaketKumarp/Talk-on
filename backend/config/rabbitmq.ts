@@ -1,8 +1,7 @@
-import amqp from "amqplib";
- 
+import amqp, { Channel, ChannelModel } from "amqplib";
 
-let connection;
-let channel : any;
+let connection: ChannelModel;
+let channel: Channel;
 
 export const connectRabbitMQ = async () => {
   try {
@@ -11,15 +10,12 @@ export const connectRabbitMQ = async () => {
     channel = await connection.createChannel();
 
     await channel.assertQueue("emailQueue", {
-        durable : true,
-    })
+      durable: true,
+    });
 
     console.log("✅RabbitMQ connected successfully");
     console.log("✅RabbitMQ channel created successfully");
     console.log("✅EmailQueue channel created successfully");
-    
-
-
 
     return channel;
   } catch (error) {
