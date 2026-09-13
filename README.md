@@ -157,6 +157,7 @@ This project is licensed under the MIT License.
 this would be web socket based app
 
 ## 👨‍💻 Author
+i have also added system design
 
 Built with ❤️ using React Native, Expo, Socket.IO, and AI.
 <img width="1170" height="2532" alt="Simulator Screenshot - iPhone 16e - 2026-06-08 at 23 15 57" src="https://github.com/user-attachments/assets/d6196b2a-ce5a-4568-b7d5-73f32802dcb6" />
